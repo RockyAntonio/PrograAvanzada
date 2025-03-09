@@ -30,33 +30,3 @@ npm start
 
 La API estará disponible en http://localhost:5000
 
-Este es un proyecto de gestión de hábitos basado en el libro "Hábitos Atómicos" de James Clear.
-
-## 📂 Estructura del Proyecto
-- `backend/` → Servidor con Express y MongoDB.
-- `frontend/` → Aplicación con Next.js y Redux.
-
-## 🚀 Instalación
-
-### 1️⃣ Clonar el repositorio
-```bash
-git clone https://github.com/tu-usuario/proyecto-habitos.git
-cd proyecto-habitos
-
-
-Configurar el Backend
-cd backend
-npm install
-npm start
-
-Configurar el Frontend
-cd frontend
-npm install
-npm run dev
-
-
-Características
--API REST con Express.js
--Conexión a MongoDB Atlas con Mongoose
--Redux para manejar estado
--Diseño con TailwindCSS
