@@ -20,4 +20,4 @@ app.get('/habits', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${3000}`));
+app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));
