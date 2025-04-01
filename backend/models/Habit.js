@@ -1,15 +1,13 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const habitSchema = new mongoose.Schema({
+const HabitSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     name: { type: String, required: true },
-    frequency: { type: String, enum: ["daily", "weekly"], required: true },
+    streak: { type: Number, default: 0 },
     completedDays: { type: Number, default: 0 },
-    streak: { type: Number, default: 0 },  // Nueva propiedad para racha
-    lastCompleted: { type: Date, default: null },  // Última fecha de completado
-    createdAt: { type: Date, default: Date.now },
+    lastCompleted: { type: Date, default: null }
 });
 
-module.exports = mongoose.model('Habit', habitSchema);
+const Habit = mongoose.model("Habit", HabitSchema);
 
-const Habit = mongoose.model("Habit", habitSchema);
 module.exports = Habit;

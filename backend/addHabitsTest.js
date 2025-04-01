@@ -8,11 +8,14 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 // Función para agregar hábitos
 const addHabitsTest = async () => {
   try {
+    const userId = "67df57a7728d51048241ff2b"; // ❗ Reemplaza con un ID real
+
     const Habits = [
-      { name: "Ejercicio", frequency: "daily" },
-      { name: "Leer", frequency: "weekly" },
-      { name: "Meditar", frequency: "daily" },
+      { name: "Ejercicio", frequency: "daily", userId },
+      { name: "Leer", frequency: "weekly", userId },
+      { name: "Meditar", frequency: "daily", userId },
     ];
+    
 
     // Insertar en la base de datos
     const insertedHabits = await Habit.insertMany(Habits);

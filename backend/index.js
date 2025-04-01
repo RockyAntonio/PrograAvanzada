@@ -1,31 +1,30 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const habitsRoutes = require("./routes/habits");
-const authRoutes = require('./routes/auth');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const connectDB = require("./config/db");
 
 const app = express();
-app.use(express.json());
-app.use(cors());
+const PORT = process.env.PORT || 5000;
+
+// Conectar a MongoDB Atlas
+connectDB();
+
+// Middlewares
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Permite solo el frontend
+    credentials: true, // Permite el envío de cookies y encabezados de autenticación
+  })
+);
+
+app.use(express.json()); // Para procesar JSON en las solicitudes
 
 // Rutas
-app.use("/api", habitsRoutes);
-app.use('/auth', authRoutes);
-// /api/api/habits
-// Puerto
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-    .then(() => console.log("Conectado a MongoDB"))
-    .catch(err => console.error("Error al conectar a MongoDB:", err));
-  
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));
+app.use("/auth", require("./routes/auth"));
+app.use("/api/habits", require("./routes/habitRoutes"));
 
-// URI de MongoDB
-const mongoURI = process.env.MONGO_URI || "mongodb+srv://alekschito2003:Y9GUFdJ4tAveHRfC@cluster0.hud9r.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; 
+// Servidor
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+});
 
-mongoose.connection.once('open', () => console.log('🟢 Conectado a MongoDB Atlas'));
-mongoose.connection.on('error', (err) => console.error('🔴 Error en la conexión a MongoDB:', err));
