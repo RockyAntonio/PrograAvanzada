@@ -1,2 +1,4 @@
 backend/node_modules/
 frontend-habits/node_modules/
+.env.local
+node_modules/
