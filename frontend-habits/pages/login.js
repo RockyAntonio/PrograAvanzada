@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { loginUser } from "../lib/api"; // importa la función
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,20 +13,7 @@ export default function Login() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Error al iniciar sesión");
-        return;
-      }
+      const data = await loginUser({ email, password });
 
       // Guardar el token en localStorage
       localStorage.setItem("token", data.token);
@@ -33,7 +21,7 @@ export default function Login() {
       // Redirigir a dashboard
       router.push("/dashboard");
     } catch (err) {
-      setError("Error de conexión con el servidor");
+      setError(err.message || "Error de conexión con el servidor");
     }
   };
 

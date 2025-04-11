@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { fetchHabits } from "../store/habitsSlice";
@@ -9,14 +9,27 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { status, error } = useSelector((state) => state.habits);
-  const token = getToken();
 
+  const [token, setToken] = useState(null);
+
+  // ✅ Obtener token solo en el cliente
   useEffect(() => {
-    if (!token) {
-      router.push("/login");
-      return;
+    if (typeof window !== "undefined") {
+      const storedToken = getToken();
+      setToken(storedToken);
     }
-    dispatch(fetchHabits(token));
+  }, []);
+
+  // ✅ Esperar al token para llamar fetchHabits
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchHabits(token));
+    } else if (token === null) {
+      // Todavía no se cargó el token
+      return;
+    } else {
+      router.push("/login");
+    }
   }, [token, dispatch, router]);
 
   return (

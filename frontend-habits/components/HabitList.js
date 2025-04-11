@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchHabits, deleteHabit, toggleHabitCompletion } from "../store/habitsSlice";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
 
 const HabitList = () => {
   const dispatch = useDispatch();
@@ -27,30 +29,9 @@ const HabitList = () => {
   };
 
   // Marcar hábito como completado
-  const handleDone = async (id) => {
-    try {
-      if (!token) return;
-
-      const response = await fetch(`http://localhost:5000/api/habits/${id}/done`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({})
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error("Error en PATCH:", data);
-        return;
-      }
-
-      dispatch(toggleHabitCompletion({ id, token }));
-    } catch (error) {
-      console.error("Error al marcar hábito como completado", error);
-    }
+  const handleDone = (id) => {
+    if (!token) return;
+    dispatch(toggleHabitCompletion({ id, token }));
   };
 
   // Eliminar hábito
