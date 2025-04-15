@@ -1,18 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 
 export default function HomeContent() {
   const router = useRouter();
   const isAuthenticated = useSelector((state) => !!state.auth.token);
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/dashboard");
-    } else {
-      router.push("/login");
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (hasMounted) {
+      if (isAuthenticated) {
+        router.push("/dashboard");
+      } else {
+        router.push("/login");
+      }
     }
-  }, [isAuthenticated]);
+  }, [hasMounted, isAuthenticated]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen text-center">
