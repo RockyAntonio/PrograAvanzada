@@ -6,5 +6,14 @@ import dynamic from "next/dynamic";
 const HomeContent = dynamic(() => import("../components/HomeContent"), { ssr: false });
 
 export default function Home() {
-  return <HomeContent />;
+  useEffect(() => {
+    console.log("HOME PAGE - Renderizado en cliente");
+  }, []);
+
+  return (
+    <>
+      <div className="text-center mt-4 text-red-600 font-bold">Probando Index.js en Vercel 🚀</div>
+      <HomeContent />
+    </>
+  );
 }
