@@ -3,27 +3,27 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const loginUser = async ({ email, password }) => {
-  const res = await fetch(`${API_URL}/api/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  });
-
-  let data;
   try {
-    data = await res.json();
-  } catch {
-    data = {};
-  }
+    const res = await fetch(`${API_URL}/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-  if (!res.ok) {
-    throw new Error(data.message || "Error al iniciar sesión");
-  }
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Error al iniciar sesión");
+    }
 
-  return data;
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    throw new Error(error.message || "Error de conexión con el servidor");
+  }
 };
+
 
 export const registerUser = async ({ name, email, password }) => {
   const res = await fetch(`${API_URL}/api/users/register`, {

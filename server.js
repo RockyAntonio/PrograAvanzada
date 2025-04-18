@@ -14,6 +14,7 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:3000",
   "https://progra-avanzada.vercel.app", // dominio final en Vercel
+  "https://progra-avanzada-o6a3zdxcc-rockyantonios-projects.vercel.app/"
 ];
 
 app.use(
