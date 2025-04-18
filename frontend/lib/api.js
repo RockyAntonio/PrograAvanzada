@@ -1,3 +1,5 @@
+// frontend/lib/api.js
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const loginUser = async ({ email, password }) => {
@@ -9,7 +11,12 @@ export const loginUser = async ({ email, password }) => {
     body: JSON.stringify({ email, password }),
   });
 
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    data = {};
+  }
 
   if (!res.ok) {
     throw new Error(data.message || "Error al iniciar sesión");
@@ -27,7 +34,12 @@ export const registerUser = async ({ name, email, password }) => {
     body: JSON.stringify({ name, email, password }),
   });
 
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    data = {};
+  }
 
   if (!res.ok) {
     throw new Error(data.message || "Error al registrar usuario");
