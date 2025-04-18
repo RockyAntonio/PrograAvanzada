@@ -1,45 +1,71 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const express = require('express');
-const mongoose = require('mongoose');
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Cargar la URL de conexión desde .env
+// Middleware para parsear JSON
+app.use(express.json());
+
+// Configuración CORS
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://progra-avanzada.vercel.app", // dominio final en Vercel
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
+// Conexión a MongoDB
 const MONGO_URI = process.env.MONGO_URI;
 
-// Conectar a MongoDB
-mongoose.connect(MONGO_URI, {
+mongoose
+  .connect(MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-})
-.then(() => console.log("🟢 Conectado a MongoDB"))
-.catch(err => console.error("🔴 Error al conectar a MongoDB:", err));
+  })
+  .then(() => console.log("🟢 Conectado a MongoDB"))
+  .catch((err) => console.error("🔴 Error al conectar a MongoDB:", err));
 
-app.get('/', (req, res) => {
-    res.send('¡Servidor funcionando con MongoDB!');
+// Rutas
+const habitRoutes = require("./routes/habits");
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
+
+app.use("/api/habits", habitRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+
+// Ruta base
+app.get("/", (req, res) => {
+  res.send("Servidor funcionando correctamente 🚀");
 });
 
-app.get('/', (req, res) => {
-    res.send('Servidor funcionando correctamente');
-});
-
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-});
-
-
-//importacion de las rutas
-const habitRoutes = require('./routes/habits');
-app.use('/api/habits', habitRoutes);
-
+// Solo si usas esta ruta manualmente:
+const Habit = require("./models/Habit"); // Asegúrate de que existe
 app.get("/habits", async (req, res) => {
-    try {
-      const habits = await Habit.find();  // Asegúrate de que Habit está importado
-      res.json(habits);
-    } catch (error) {
-      res.status(500).json({ message: "Error al obtener los hábitos", error });
-    }
-  });
-  
+  try {
+    const habits = await Habit.find();
+    res.json(habits);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener los hábitos", error });
+  }
+});
+
+// Iniciar servidor
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+});
