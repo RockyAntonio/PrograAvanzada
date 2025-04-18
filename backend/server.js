@@ -1,23 +1,44 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
 
 const app = express();
-app.use(cors());
+const PORT = process.env.PORT || 3000;
+
+// Middleware
 app.use(express.json());
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://progra-avanzada.vercel.app"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
+
+// Conexión a MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('MongoDB conectado'))
-.catch(err => console.log(err));
+.then(() => console.log("🟢 Conectado a MongoDB"))
+.catch((err) => console.error("🔴 Error al conectar a MongoDB:", err));
 
-app.get('/habits', async (req, res) => {
-  const habits = await Habit.find();
-  res.json(habits);
+// Rutas
+app.get("/", (req, res) => {
+  res.send("Servidor frontend funcionando correctamente 🚀");
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${3000}`));
+const PORT_FINAL = process.env.PORT || 3000;
+app.listen(PORT_FINAL, () => {
+  console.log(`🚀 Servidor frontend corriendo en http://localhost:${PORT_FINAL}`);
+});
